@@ -16,7 +16,7 @@ const navigation = [
     icon: ServerIcon,
     subItems: [
       { name: 'Ollama', enabled: true },
-      { name: 'vLLM', enabled: true },
+      { name: 'vLLM', enabled: false },
       { name: 'Rerank', enabled: false }
     ]
   },

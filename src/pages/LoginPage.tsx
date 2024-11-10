@@ -8,6 +8,7 @@ const LoginPage = () => {
     email: '',
     password: '',
   });
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string>('');
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -15,13 +16,12 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // 여기서는 임시로 하드코딩된 사용자 정보로 로그인
       if (credentials.email === 'admin@example.com' && credentials.password === 'admin123') {
         login({
           id: 1,
           username: 'Admin',
           email: credentials.email,
-        });
+        }, rememberMe);
         navigate('/');
       } else {
         setError('이메일 또는 비밀번호가 잘못되었습니다.');
@@ -67,6 +67,22 @@ const LoginPage = () => {
                   setCredentials({ ...credentials, password: e.target.value })
                 }
               />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                로그인 상태 유지
+              </label>
             </div>
           </div>
 

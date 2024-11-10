@@ -3,40 +3,54 @@ import { User } from '../types/auth';
 
 interface AuthContextType {
   user: User | null;
-  login: (user: User) => void;
+  login: (user: User, rememberMe: boolean) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(() => {
+    // 페이지 로드 시 localStorage에서 사용자 정보 확인
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
-  useEffect(() => {
-    // 로컬 스토리지에서 사용자 정보 불러오기
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  // isAuthenticated 계산
+  const isAuthenticated = user !== null;
 
-  const login = (userData: User) => {
+  const login = (userData: User, rememberMe: boolean) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    if (rememberMe) {
+      // rememberMe가 true일 경우 localStorage에 저장
+      localStorage.setItem('user', JSON.stringify(userData));
+    } else {
+      // rememberMe가 false일 경우 sessionStorage에 저장
+      sessionStorage.setItem('user', JSON.stringify(userData));
+    }
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
   };
 
+  useEffect(() => {
+    // sessionStorage에서 사용자 정보 확인
+    const sessionUser = sessionStorage.getItem('user');
+    if (sessionUser && !user) {
+      setUser(JSON.parse(sessionUser));
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
