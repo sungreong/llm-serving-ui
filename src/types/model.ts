@@ -68,7 +68,21 @@ export interface ModelResponse {
     error?: string;
     response?: string;
   };
+
 }
+
+export interface ModelEmbeddingResponse {
+  id: string;
+  name: string;
+  embeddings: number[];
+  status: string;
+  data: {
+    embeddings: number[];
+  };
+}
+
+
+
 
 export type ModelInfo = Model;
 
@@ -108,6 +122,7 @@ export interface ModelServingInfo {
   port?: number;
   status: string;
   engine: ModelEngineType;
+  usageType: ModelUsageType;
   nginxEnabled?: boolean;
   servingUrl?: string;
 }

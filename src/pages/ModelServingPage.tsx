@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { modelApi } from '../services/api';
-import { ModelServingInfo, ModelEngineType } from '../types/model';
+import { ModelServingInfo, ModelEngineType , ModelUsageType } from '../types/model';
 import { toast } from 'react-hot-toast';
 import ModelGuideModal from '../components/model/ModelGuideModal';
 
@@ -74,6 +74,9 @@ export default function ModelServingPage() {
                   상태
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  모델 유형
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   포트
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
@@ -92,6 +95,9 @@ export default function ModelServingPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-xs text-gray-500">{info.engine}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-xs text-gray-500">{info.usageType}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -146,6 +152,7 @@ export default function ModelServingPage() {
           }}
           modelName={selectedModel.name}
           engineType={selectedModel.engine}
+          usageType={servingInfo.find(info => info.name === selectedModel.name)?.usageType || ModelUsageType.GENERATION}
           servingUrl={servingInfo.find(info => info.name === selectedModel.name)?.servingUrl}
         />
       )}

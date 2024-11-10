@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ModelEngineType } from '../../types/model';
+import { ModelEngineType, ModelUsageType } from '../../types/model';
 import { ClipboardDocumentIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 interface ModelGuideModalProps {
@@ -7,6 +7,7 @@ interface ModelGuideModalProps {
   onClose: () => void;
   modelName: string;
   engineType: ModelEngineType;
+  usageType: ModelUsageType;
   servingUrl?: string;
 }
 
@@ -17,6 +18,7 @@ export default function ModelGuideModal({
   onClose, 
   modelName, 
   engineType,
+  usageType,
   servingUrl 
 }: ModelGuideModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>('curl');
@@ -35,84 +37,151 @@ export default function ModelGuideModal({
       ? modelName.replace("_", ":")
       : modelName.replace("_", "/");
     const baseUrl = servingUrl || `http://localhost:80/${modelName}/`;
-
+  
     if (engineType === ModelEngineType.OLLAMA) {
-      return `curl -X POST ${baseUrl}api/generate \\
-  -H 'Content-Type: application/json' \\
-  -d '{
-    "model": "${realModelName}",
-    "prompt": "Hello, World!",
-    "stream": false
-  }'`;
+      if (usageType === ModelUsageType.EMBEDDING) {
+        return `curl -X POST ${baseUrl}api/embed  \\
+    -H 'Content-Type: application/json' \\
+    -d '{
+      "model": "${realModelName}",
+      "input": "Hello, World!",
+    }'`;
+      } else {
+        return `curl -X POST ${baseUrl}api/generate \\
+    -H 'Content-Type: application/json' \\
+    -d '{
+      "model": "${realModelName}",
+      "prompt": "Hello, World!",
+      "stream": false
+    }'`;
+      }
     } else {
-      return `curl ${baseUrl}v1/completions \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "${realModelName}",
-    "prompt": "Hello, World!"
-  }'`;
+      if (usageType === ModelUsageType.EMBEDDING) {
+        return `curl -X POST ${baseUrl}v1/embeddings \\
+    -H "Content-Type: application/json" \\
+    -d '{
+      "model": "${realModelName}",
+      "input": "Hello, World!",
+      "encoding_format": "float"
+    }'`;
+      } else {
+        return `curl -X POST ${baseUrl}v1/completions \\
+    -H "Content-Type: application/json" \\
+    -d '{
+      "model": "${realModelName}",
+      "prompt": "Hello, World!"
+    }'`;
+      }
     }
   };
-
   const getPythonExample = () => {
     const realModelName = engineType === ModelEngineType.OLLAMA 
       ? modelName.replace("_", ":")
       : modelName.replace("_", "/");
     const baseUrl = servingUrl || `http://localhost:80/${modelName}/`;
-
+  
     if (engineType === ModelEngineType.OLLAMA) {
-      return `from langchain_ollama.llms import OllamaLLM
-base_url = '${baseUrl}'
-llm = OllamaLLM(model='${realModelName}', base_url=base_url)
-response = llm.invoke("Hello, World!")
-
-# or if model is embedding model, use OllamaEmbeddings
-from langchain_ollama import OllamaEmbeddings
-embeddings = OllamaEmbeddings(model='${realModelName}', base_url=base_url)
-
-import requests
-base_url = '${baseUrl}api/generate'
-response = requests.post(base_url, json={'prompt': 'Hello, World!', 'stream': False, 'model': '${realModelName}'})
-print(response.json())`;
+      if (usageType === ModelUsageType.EMBEDDING) {
+        return `# LangChain을 사용한 방법
+  from langchain_ollama import OllamaEmbeddings
+  embeddings = OllamaEmbeddings(model='${realModelName}', base_url='${baseUrl}')
+  text = "Hello, World!"
+  embedding = embeddings.embed_query(text)
+  
+  # requests를 사용한 직접 API 호출 방법
+  import requests
+  response = requests.post(
+      f"${baseUrl}api/embed",
+      json={
+          "model": "${realModelName}",
+          "input": "Hello, World!",
+      }
+  )
+  print(response.json())`;
+      } else {
+        return `# LangChain을 사용한 방법
+  from langchain_ollama import Ollama
+  llm = Ollama(model='${realModelName}', base_url='${baseUrl}')
+  response = llm.invoke("Hello, World!")
+  
+  # requests를 사용한 직접 API 호출 방법
+  import requests
+  response = requests.post(
+      f"${baseUrl}api/generate",
+      json={
+          "model": "${realModelName}",
+          "prompt": "Hello, World!",
+          "stream": False
+      }
+  )
+  print(response.json())`;
+      }
     } else {
-      return `from openai import OpenAI
-openai_api_key = 'EMPTY'
-openai_api_base = '${baseUrl}v1'
-client = OpenAI(
-    api_key=openai_api_key,
-    base_url=openai_api_base,
-)
-client.completions.create(model="${realModelName}", prompt="Hello, World!")
+      if (usageType === ModelUsageType.EMBEDDING) {
+        return `# OpenAI 클라이언트를 사용한 방법
+  from openai import OpenAI
 
-from langchain_openai import ChatOpenAI
-from langchain.schema import HumanMessage
-chat = ChatOpenAI(
-    model="${realModelName}",
-    base_url=openai_api_base,
-)
-messages = [HumanMessage(content="LangChain과 VLLM을 함께 사용하는 방법을 설명해 주세요.")]
-response = chat(messages)
-
-import requests
-# API 엔드포인트 URL
-api_url = "${baseUrl}v1/completions"
-
-# 요청 데이터
-data = {
-    "prompt": "여기에 프롬프트를 입력하세요",
-    "model": "${realModelName}"
-}
-
-# POST 요청 보내기
-response = requests.post(api_url, json=data)
-
-# 응답 확인
-if response.status_code == 200:
-    result = response.json()
-    print(result)
-else:
-    print(f"Error: {response.status_code}")
-    print(response.text)`;
+  client = OpenAI(
+      api_key="EMPTY",
+      base_url="${baseUrl}v1"
+  )
+  response = client.embeddings.create(
+      model="${realModelName}",
+      input="Hello, World!"
+  )
+  
+  # LangChain을 사용한 방법
+  from langchain_openai import OpenAIEmbeddings
+  embeddings = OpenAIEmbeddings(
+      model="${realModelName}",
+      openai_api_key="EMPTY",
+      openai_api_base="${baseUrl}v1"
+  )
+  text = "Hello, World!"
+  embedding = embeddings.embed_query(text)
+  
+  # requests를 사용한 직접 API 호출 방법
+  import requests
+  response = requests.post(
+      f"{baseUrl}v1/em",
+      json={
+          "model": "${realModelName}",
+          "input": "Hello, World!"
+      }
+  )
+  print(response.json())`;
+      } else {
+        return `# OpenAI 클라이언트를 사용한 방법
+  from openai import OpenAI
+  client = OpenAI(
+      api_key="EMPTY",
+      base_url="${baseUrl}v1"
+  )
+  response = client.completions.create(
+      model="${realModelName}",
+      prompt="Hello, World!"
+  )
+  
+  # LangChain을 사용한 방법
+  from langchain_openai import OpenAI
+  llm = OpenAI(
+      model_name="${realModelName}",
+      openai_api_key="EMPTY",
+      openai_api_base="${baseUrl}v1"
+  )
+  response = llm.invoke("Hello, World!")
+  
+  # requests를 사용한 직접 API 호출 방법
+  import requests
+  response = requests.post(
+      f"{baseUrl}v1/completions",
+      json={
+          "model": "${realModelName}",
+          "prompt": "Hello, World!"
+      }
+  )
+  print(response.json())`;
+      }
     }
   };
 

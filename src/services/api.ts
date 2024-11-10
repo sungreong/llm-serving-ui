@@ -7,6 +7,7 @@ import {
   ContainerInfo,
   ModelDetailInfo,
   ModelDetailResponse,
+  ModelEmbeddingResponse,
   NginxConfig,
   ModelServingInfo
 } from '../types/model';
@@ -27,12 +28,15 @@ export const modelApi = {
   stopModel: (id: string) => api.post<ModelResponse>(`/models/${id}/stop`),
   removeModel: (id: string) => api.delete<ModelResponse>(`/models/${id}`),
   getLogs: (id: string) => api.get<{logs: string[]}>(`/models/${id}/logs`),
-  testModel: (id: string, prompt: string) => api.post<ModelResponse>(`/models/${id}/test`, { prompt }),
+  testModelGeneration: (id: string, prompt: string) => api.post<ModelResponse>(`/models/${id}/test`, { prompt }),
+  testModelEmbedding: (id: string, prompt: string) => api.post<ModelEmbeddingResponse>(`/models/${id}/test`, { prompt }),
   getContainerInfo: (id: string) => api.get<ContainerInfo>(`/models/${id}/container`),
   restartModel: (id: string) => api.post<ModelResponse>(`/models/${id}/restart`),
   getModelInfo: (id: string) => api.get<ModelDetailResponse>(`/models/${id}/info`),
   updateNginxConfig: () => api.post<NginxConfig>('/admin/update-nginx'),
   getServingInfo: () => api.get<ModelServingInfo[]>('/models/serving'),
 };
+
+
 
 export default api; 
