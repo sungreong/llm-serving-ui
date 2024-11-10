@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 const navigation = [
   { name: '모델 관리', path: '/' },
   { name: '모델 테스트', path: '/test' },
+  { name: '모델 서빙', path: '/serving' },
   { name: '설정', path: '/settings' },
 ];
 

@@ -3,12 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   DocumentTextIcon, 
   BeakerIcon, 
-  Cog6ToothIcon 
+  Cog6ToothIcon,
+  ServerIcon,
 } from '@heroicons/react/24/outline';
 
 const navigation = [
   { name: '모델 관리', path: '/', icon: DocumentTextIcon },
   { name: '모델 테스트', path: '/test', icon: BeakerIcon },
+  { name: '모델 서빙', path: '/serving', icon: ServerIcon },
   { name: '설정', path: '/settings', icon: Cog6ToothIcon },
 ];
 

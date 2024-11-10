@@ -1,0 +1,194 @@
+[
+    {
+      "group": "모델 관련 설정",
+      "parameters": [
+        {
+          "name": "--model",
+          "description": "사용할 HuggingFace 모델의 경로 또는 이름",
+          "data_type": "string",
+          "default": null,
+          "options": []
+        },
+        {
+          "name": "--tokenizer",
+          "description": "사용할 HuggingFace 토크나이저의 경로 또는 이름",
+          "data_type": "string",
+          "default": null,
+          "options": []
+        },
+        {
+          "name": "--revision",
+          "description": "모델의 특정 버전 (브랜치명, 태그, 커밋 ID)",
+          "data_type": "string",
+          "default": null,
+          "options": []
+        },
+        {
+          "name": "--load-format",
+          "description": "모델 가중치 파일의 로드 형식",
+          "data_type": "string",
+          "default": "auto",
+          "options": ["auto", "pt", "safetensors", "npcache", "dummy", "tensorizer", "bitsandbytes"]
+        },
+        {
+          "name": "--tokenizer-mode",
+          "description": "토크나이저 모드",
+          "data_type": "string",
+          "default": "auto",
+          "options": ["auto", "slow", "mistral"]
+        }
+      ]
+    },
+    {
+      "group": "GPU 및 성능 관리",
+      "parameters": [
+        {
+          "name": "--gpu-memory-utilization",
+          "description": "GPU 메모리 사용률 (0.0 ~ 1.0)",
+          "data_type": "float",
+          "default": 0.9,
+          "options": [0.0, 1.0]
+        },
+        {
+          "name": "--cpu-offload-gb",
+          "description": "GPU에서 CPU로 오프로드할 메모리 크기(GiB)",
+          "data_type": "integer",
+          "default": 0,
+          "options": []
+        },
+        {
+          "name": "--swap-space",
+          "description": "GPU 스왑 공간 크기(GiB)",
+          "data_type": "integer",
+          "default": 4,
+          "options": []
+        },
+        {
+          "name": "--max-num-seqs",
+          "description": "반복당 최대 시퀀스 수",
+          "data_type": "integer",
+          "default": 256,
+          "options": []
+        },
+        {
+          "name": "--block-size",
+          "description": "토큰 블록 크기 (Contiguous chunks of tokens)",
+          "data_type": "integer",
+          "default": 16,
+          "options": [8, 16, 32]
+        }
+      ]
+    },
+    {
+      "group": "양자화 및 데이터 유형",
+      "parameters": [
+        {
+          "name": "--dtype",
+          "description": "모델 가중치 및 활성화 함수의 데이터 유형 (FP16, FP32 등)",
+          "data_type": "string",
+          "default": "auto",
+          "options": ["auto", "half", "float16", "bfloat16", "float", "float32"]
+        },
+        {
+          "name": "--quantization",
+          "description": "가중치를 양자화하는 방식",
+          "data_type": "string",
+          "default": "None",
+          "options": ["aqlm", "awq", "deepspeedfp", "tpu_int8", "fp8", "bitsandbytes", "None"]
+        },
+        {
+          "name": "--kv-cache-dtype",
+          "description": "KV 캐시 저장소의 데이터 타입",
+          "data_type": "string",
+          "default": "auto",
+          "options": ["auto", "fp8", "fp8_e5m2", "fp8_e4m3"]
+        }
+      ]
+    },
+    {
+      "group": "병렬 처리 및 성능 최적화",
+      "parameters": [
+        {
+          "name": "--tensor-parallel-size",
+          "description": "텐서 병렬 처리에 사용할 GPU 개수",
+          "data_type": "integer",
+          "default": 1,
+          "options": []
+        },
+        {
+          "name": "--pipeline-parallel-size",
+          "description": "파이프라인 병렬 처리 단계 수",
+          "data_type": "integer",
+          "default": 1,
+          "options": []
+        },
+        {
+          "name": "--max-parallel-loading-workers",
+          "description": "병렬 로딩 작업자 수",
+          "data_type": "integer",
+          "default": null,
+          "options": []
+        },
+        {
+          "name": "--enable-prefix-caching",
+          "description": "프리픽스 캐싱을 활성화하여 속도 최적화",
+          "data_type": "boolean",
+          "default": false,
+          "options": []
+        },
+        {
+          "name": "--disable-sliding-window",
+          "description": "슬라이딩 윈도우 비활성화",
+          "data_type": "boolean",
+          "default": false,
+          "options": []
+        }
+      ]
+    },
+    {
+      "group": "분산 실행 및 스케줄링",
+      "parameters": [
+        {
+          "name": "--distributed-executor-backend",
+          "description": "분산 실행에 사용할 백엔드",
+          "data_type": "string",
+          "default": "ray",
+          "options": ["ray", "mp"]
+        },
+        {
+          "name": "--enable-chunked-prefill",
+          "description": "Prefill 요청을 분할하여 처리",
+          "data_type": "boolean",
+          "default": false,
+          "options": []
+        },
+        {
+          "name": "--num-scheduler-steps",
+          "description": "스케줄러 호출당 최대 전진 단계 수",
+          "data_type": "integer",
+          "default": 1,
+          "options": []
+        }
+      ]
+    },
+    {
+      "group": "모델 컨텍스트 및 기타 설정",
+      "parameters": [
+        {
+          "name": "--max-model-len",
+          "description": "모델의 최대 컨텍스트 길이",
+          "data_type": "integer",
+          "default": 2048,
+          "options": []
+        },
+        {
+          "name": "--max-seq-len-to-capture",
+          "description": "CUDA 그래프로 캡처되는 최대 시퀀스 길이",
+          "data_type": "integer",
+          "default": 8192,
+          "options": []
+        }
+      ]
+    }
+  ]
+  

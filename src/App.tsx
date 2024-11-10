@@ -3,6 +3,7 @@ import Layout from './components/layout/Layout';
 import ModelManagementPage from './pages/ModelManagementPage';
 import ModelTestPage from './pages/ModelTestPage';
 import SettingsPage from './pages/SettingsPage';
+import ModelServingPage from './pages/ModelServingPage';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<ModelManagementPage />} />
             <Route path="/test" element={<ModelTestPage />} />
+            <Route path="/serving" element={<ModelServingPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </Layout>

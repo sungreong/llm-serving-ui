@@ -95,3 +95,19 @@ export interface ModelDetailResponse {
   details: Record<string, any>;
   status: string;
 }
+
+export interface NginxConfig {
+  success: boolean;
+  message: string;
+  config?: string;
+}
+
+export interface ModelServingInfo {
+  id: string;
+  name: string;
+  port?: number;
+  status: string;
+  engine: ModelEngineType;
+  nginxEnabled?: boolean;
+  servingUrl?: string;
+}

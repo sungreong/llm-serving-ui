@@ -6,14 +6,16 @@ import {
   ModelEngineType,
   ContainerInfo,
   ModelDetailInfo,
-  ModelDetailResponse
+  ModelDetailResponse,
+  NginxConfig,
+  ModelServingInfo
 } from '../types/model';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 30000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   }
@@ -29,6 +31,8 @@ export const modelApi = {
   getContainerInfo: (id: string) => api.get<ContainerInfo>(`/models/${id}/container`),
   restartModel: (id: string) => api.post<ModelResponse>(`/models/${id}/restart`),
   getModelInfo: (id: string) => api.get<ModelDetailResponse>(`/models/${id}/info`),
+  updateNginxConfig: () => api.post<NginxConfig>('/admin/update-nginx'),
+  getServingInfo: () => api.get<ModelServingInfo[]>('/models/serving'),
 };
 
 export default api; 
