@@ -1,7 +1,15 @@
 import axios from 'axios';
-import { ModelConfig, ModelInfo, ModelResponse } from '../types/model';
+import { 
+  ModelConfig, 
+  ModelInfo, 
+  ModelResponse, 
+  ModelEngineType,
+  ContainerInfo,
+  ModelDetailInfo,
+  ModelDetailResponse
+} from '../types/model';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://llm-model-gate-backend:8000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -18,6 +26,9 @@ export const modelApi = {
   removeModel: (id: string) => api.delete<ModelResponse>(`/models/${id}`),
   getLogs: (id: string) => api.get<{logs: string[]}>(`/models/${id}/logs`),
   testModel: (id: string, prompt: string) => api.post<ModelResponse>(`/models/${id}/test`, { prompt }),
+  getContainerInfo: (id: string) => api.get<ContainerInfo>(`/models/${id}/container`),
+  restartModel: (id: string) => api.post<ModelResponse>(`/models/${id}/restart`),
+  getModelInfo: (id: string) => api.get<ModelDetailResponse>(`/models/${id}/info`),
 };
 
 export default api; 

@@ -8,6 +8,7 @@ interface ModelListProps {
   onStop: (id: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   onViewLogs: (id: string) => Promise<void>;
+  onRestart: (id: string) => Promise<void>;
 }
 
 export default function ModelList({
@@ -16,6 +17,7 @@ export default function ModelList({
   onStop,
   onDelete,
   onViewLogs,
+  onRestart,
 }: ModelListProps) {
   return (
     <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -27,6 +29,7 @@ export default function ModelList({
           onStop={onStop}
           onRemove={onDelete}
           onViewLogs={onViewLogs}
+          onRestart={onRestart}
         />
       ))}
     </div>

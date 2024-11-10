@@ -54,6 +54,7 @@ export default function ModelTestPage() {
       );
 
       const results = await Promise.all(promises);
+      console.log(results);
       setResponses(results.map(r => r.data));
     } catch (error) {
       toast.error('테스트 중 오류가 발생했습니다');
@@ -109,14 +110,15 @@ export default function ModelTestPage() {
           <div className="space-y-4">
             {responses.map((response, index) => (
               <div key={index} className="border rounded-md p-4">
+                    
                 <h3 className="font-semibold mb-2">
-                  {models.find(m => m.id === response.data?.modelId)?.name || response.data?.modelId}
+                  {response.name}
                 </h3>
-                {response.data?.error ? (
-                  <p className="text-red-500">{response.data?.error}</p>
+                {response.status === 'error' ? (
+                  <p className="text-red-500">{response.message}</p>
                 ) : (
                   <pre className="whitespace-pre-wrap text-sm">
-                    {response.data?.response}
+                    {response.message}
                   </pre>
                 )}
               </div>

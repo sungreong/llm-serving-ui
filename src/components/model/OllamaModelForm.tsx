@@ -1,8 +1,8 @@
 import React from 'react';
-import { ModelConfig, ModelUsageType, ModelEngineType } from '../../types/model';
+import { ModelConfig, ModelUsageType, ModelEngineType, OllamaModelConfig } from '../../types/model';
 
 interface OllamaModelFormProps {
-  onSubmit: (config: ModelConfig) => void;
+  onSubmit: (config: Omit<OllamaModelConfig, 'engine'>) => void;
 }
 
 export default function OllamaModelForm({ onSubmit }: OllamaModelFormProps) {
@@ -13,7 +13,6 @@ export default function OllamaModelForm({ onSubmit }: OllamaModelFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
-      engine: ModelEngineType.OLLAMA,
       name: modelName,
       gpuId: gpuIds,
       usageType,

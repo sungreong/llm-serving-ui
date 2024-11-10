@@ -1,8 +1,8 @@
 import React from 'react';
-import { ModelConfig, ModelUsageType, ModelEngineType } from '../../types/model';
+import { ModelConfig, ModelUsageType, ModelEngineType, VLLMModelConfig } from '../../types/model';
 
 interface VLLMModelFormProps {
-  onSubmit: (config: ModelConfig) => void;
+  onSubmit: (config: Omit<VLLMModelConfig, 'engine'>) => void;
 }
 
 export default function VLLMModelForm({ onSubmit }: VLLMModelFormProps) {
@@ -16,7 +16,6 @@ export default function VLLMModelForm({ onSubmit }: VLLMModelFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
-      engine: ModelEngineType.VLLM,
       name: modelName,
       gpuId: gpuIds,
       usageType,

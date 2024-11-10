@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Dialog, Tab } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import OllamaModelForm from './OllamaModelForm';
 import VLLMModelForm from './VLLMModelForm';
-import { ModelConfig } from '../../types/model';
+import { ModelConfig, ModelEngineType, OllamaModelConfig, VLLMModelConfig } from '../../types/model';
 
 interface CreateModelModalProps {
   isOpen: boolean;
@@ -16,6 +16,21 @@ export default function CreateModelModal({
   onClose,
   onSubmit,
 }: CreateModelModalProps) {
+  const handleOllamaSubmit = (config: Omit<OllamaModelConfig, 'engine'>) => {
+    console.log(config);
+    onSubmit({
+      ...config,
+      engine: ModelEngineType.OLLAMA
+    } as OllamaModelConfig);
+  };
+
+  const handleVLLMSubmit = (config: Omit<VLLMModelConfig, 'engine'>) => {
+    onSubmit({
+      ...config,
+      engine: ModelEngineType.VLLM
+    } as VLLMModelConfig);
+  };
+
   return (
     <Dialog
       open={isOpen}
@@ -65,10 +80,10 @@ export default function CreateModelModal({
             </Tab.List>
             <Tab.Panels>
               <Tab.Panel>
-                <OllamaModelForm onSubmit={onSubmit} />
+                <OllamaModelForm onSubmit={handleOllamaSubmit} />
               </Tab.Panel>
               <Tab.Panel>
-                <VLLMModelForm onSubmit={onSubmit} />
+                <VLLMModelForm onSubmit={handleVLLMSubmit} />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>

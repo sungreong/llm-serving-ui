@@ -10,7 +10,7 @@ export default function ModelForm({ onSubmit, onClose }: ModelFormProps) {
   const [formData, setFormData] = useState<ModelConfig>({
     name: '',
     engine: ModelEngineType.OLLAMA,
-    usageType: ModelUsageType.DEVELOPMENT
+    usageType: ModelUsageType.GENERATION
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,9 +65,7 @@ export default function ModelForm({ onSubmit, onClose }: ModelFormProps) {
               onChange={(e) => setFormData({ ...formData, usageType: e.target.value as ModelUsageType })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
-              <option value={ModelUsageType.DEVELOPMENT}>개발</option>
-              <option value={ModelUsageType.PRODUCTION}>운영</option>
-              <option value={ModelUsageType.TESTING}>테스트</option>
+              <option value={ModelUsageType.EMBEDDING}>임베딩</option>
               <option value={ModelUsageType.GENERATION}>생성</option>
             </select>
           </div>
